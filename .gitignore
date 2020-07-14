@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Qt Creator
+*.pro.user
+build-Usuarios-Desktop_Qt_5_15_0_MinGW_32_bit-Debug/*
