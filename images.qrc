@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/new/iconos">
+        <file>ANTERIOR.png</file>
+        <file>Configuracion.png</file>
+        <file>SIGUIENTE.png</file>
+        <file>usuario.png</file>
+        <file>usuario_add.png</file>
+        <file>usuario_no_ok.png</file>
+        <file>usuario_ok.png</file>
+    </qresource>
+</RCC>
