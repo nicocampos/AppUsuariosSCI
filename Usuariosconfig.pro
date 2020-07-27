@@ -4,11 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui
+QT       += xml
+QT       += multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Usuarios
+TARGET = Usuariosconfig
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -24,20 +26,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    camera.cpp \
         main.cpp \
     miusuario.cpp \
-        usuario.cpp \
+    photoedit.cpp \
     mylineedit.cpp \
+    usuarioconfig.cpp \
     xmlhandler.cpp
 
 HEADERS += \
+    camera.h \
     miusuario.h \
-        usuario.h \
+    photoedit.h \
     mylineedit.h \
+    usuarioconfig.h \
     xmlhandler.h
 
 FORMS += \
-        usuario.ui
+        camera.ui \
+        photoedit.ui \
+        usuarioconfig.ui
 
 RESOURCES += \
     images.qrc

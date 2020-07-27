@@ -3,23 +3,25 @@
 
 #include "xmlhandler.h"
 #include "miusuario.h"
+#include "photoedit.h"
+#include "camera.h"
 #include <QDialog>
 #include <QFile>
 #include <QList>
 
 #define VER_USUARIOS    6
 
-namespace Ui {
-class Usuario;
+namespace Ui{
+class Usuarioconfig;
 }
 
-class Usuario : public QDialog
+class Usuarioconfig : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Usuario(QWidget *parent = 0);
-    ~Usuario();
+    explicit Usuarioconfig(QWidget *parent = 0);
+    ~Usuarioconfig();
 
 //    void setUsuarios(QFile &);
 
@@ -34,7 +36,7 @@ private slots:
 
     void on_lineEdit_Username_editingFinished();
 
-    void on_lineEdit_Foto_editingFinished();
+//    void on_lineEdit_Foto_editingFinished();
 
     void on_lineEdit_Username_textEdited(const QString &arg1);
 
@@ -44,12 +46,16 @@ private slots:
 
     void userNameClicked(void);
 
-    void fotoClicked(void);
+//    void fotoClicked(void);
 
     void on_PB_Aceptar_clicked();
 
+    void on_PB_SelecFoto_clicked();
+
+    void on_PB_SacarFoto_clicked();
+
 private:
-    Ui::Usuario *ui;
+    Ui::Usuarioconfig *ui;
 
     QPushButton *PB_usuarios[6];
     QList<Miusuario> usuarios;
@@ -58,6 +64,8 @@ private:
     QString *pathFoto;
     XmlHandler *m_datosXml;
 
+    Photoedit *editPhoto;
+    Camera *camWindow;
 
     void setEnabled_Add(bool);
     void validateUserName(const QString &);

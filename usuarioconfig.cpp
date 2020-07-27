@@ -1,5 +1,5 @@
-#include "usuario.h"
-#include "ui_usuario.h"
+#include "usuarioconfig.h"
+#include "ui_usuarioconfig.h"
 #include <QIcon>
 #include <QDir>
 #include <QFileDialog>
@@ -10,14 +10,16 @@
 #define CANT_USUARIOS   listaUsuarios->length()-2                   // el 2 es para no tener en cuenta el . y ..
 
 
-Usuario::Usuario(QWidget *parent) :
+Usuarioconfig::Usuarioconfig(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Usuario)
+    ui(new Ui::Usuarioconfig)
 {
     ui->setupUi(this);
     m_datosXml = nullptr;
     pathFoto = nullptr;
     posScroll = 0;
+    editPhoto = nullptr;
+    camWindow = nullptr;
 
     //*****************************************************************************
     //         Connect asociados al evento del click sobre los Line Edit
@@ -25,7 +27,7 @@ Usuario::Usuario(QWidget *parent) :
     connect(ui->lineEdit_Nombre,SIGNAL(MousePressed()),this,SLOT(nombreClicked()));
     connect(ui->lineEdit_Apellido,SIGNAL(MousePressed()),this,SLOT(apellidoClicked()));
     connect(ui->lineEdit_Username,SIGNAL(MousePressed()),this,SLOT(userNameClicked()));
-    connect(ui->lineEdit_Foto,SIGNAL(MousePressed()),this,SLOT(fotoClicked()));
+//    connect(ui->lineEdit_Foto,SIGNAL(MousePressed()),this,SLOT(fotoClicked()));
     //*****************************************************************************
 
     //*****************************************************************************
@@ -43,12 +45,12 @@ Usuario::Usuario(QWidget *parent) :
     MostrarUsuario();
 }
 
-Usuario::~Usuario()
+Usuarioconfig::~Usuarioconfig()
 {
     delete ui;
 }
 
-void Usuario::CargarUsuarios(void)
+void Usuarioconfig::CargarUsuarios(void)
 {
     QFile filename;
     QDir dirUsuarios(DIRUSUARIOS);
@@ -69,7 +71,7 @@ void Usuario::CargarUsuarios(void)
     }
 }
 
-void Usuario::MostrarUsuario(void)
+void Usuarioconfig::MostrarUsuario(void)
 {
     // VER_USUARIOS es por la cantidad de usuarios que puedo mostrar
     if(CANT_USUARIOS <= VER_USUARIOS){
@@ -91,20 +93,22 @@ void Usuario::MostrarUsuario(void)
  *              caso contrario los deshabilita
  * \return Void
  */
-void Usuario::setEnabled_Add(bool opcion)
+void Usuarioconfig::setEnabled_Add(bool opcion)
 {
     ui->PB_Aceptar->setEnabled(opcion);
     ui->PB_Cancelar->setEnabled(opcion);
+    ui->PB_SelecFoto->setEnabled(opcion);
+    ui->PB_SacarFoto->setEnabled(opcion);
 
     ui->lineEdit_Nombre->setEnabled(opcion);
     ui->lineEdit_Apellido->setEnabled(opcion);
     ui->lineEdit_Username->setEnabled(opcion);
-    ui->lineEdit_Foto->setEnabled(opcion);
+//    ui->lineEdit_Foto->setEnabled(opcion);
 }
 
 // Valido que el nombre de usuario no tenga
 // caracteres extraños
-void Usuario::validateUserName(const QString &arg1)
+void Usuarioconfig::validateUserName(const QString &arg1)
 {
     QString text = arg1;
     QString Vali_UserName(VALIUSERNAME);
@@ -117,13 +121,13 @@ void Usuario::validateUserName(const QString &arg1)
 
 
 
-void Usuario::on_PB_USR_ADD_clicked()
+void Usuarioconfig::on_PB_USR_ADD_clicked()
 {
     // Habilito los campos a rellenar y buttons
     setEnabled_Add(true);
 }
 
-void Usuario::on_PB_Aceptar_clicked()
+void Usuarioconfig::on_PB_Aceptar_clicked()
 {
     if(ui->PB_Aceptar->text() == "Aceptar"){
         m_datosXml = new XmlHandler(ui->lineEdit_Username->text(), NUEVO_XML_USUARIO);
@@ -142,7 +146,7 @@ void Usuario::on_PB_Aceptar_clicked()
 //    }
 }
 
-void Usuario::on_PB_Cancelar_clicked()
+void Usuarioconfig::on_PB_Cancelar_clicked()
 {
     // Vuelvo al color de fondo de la ventana
     ui->lineEdit_Username->setStyleSheet("QLineEdit {background-color: window;}");
@@ -154,7 +158,7 @@ void Usuario::on_PB_Cancelar_clicked()
     ui->lineEdit_Nombre->setText("Nombre:");
     ui->lineEdit_Apellido->setText("Apellido:");
     ui->lineEdit_Username->setText("Nombre de usuario:");
-    ui->lineEdit_Foto->setText("Foto:");
+//    ui->lineEdit_Foto->setText("Foto:");
 
     // Borro la vista previa
     QIcon vista_previa;
@@ -164,19 +168,19 @@ void Usuario::on_PB_Cancelar_clicked()
 // **************************************************
 // Auto-completar los campos en caso de estar vacios
 // **************************************************
-void Usuario::on_lineEdit_Nombre_editingFinished()
+void Usuarioconfig::on_lineEdit_Nombre_editingFinished()
 {
     if(ui->lineEdit_Nombre->text() == "")
         ui->lineEdit_Nombre->setText("Nombre:");
 }
 
-void Usuario::on_lineEdit_Apellido_editingFinished()
+void Usuarioconfig::on_lineEdit_Apellido_editingFinished()
 {
     if(ui->lineEdit_Apellido->text() == "")
         ui->lineEdit_Apellido->setText("Apellido:");
 }
 
-void Usuario::on_lineEdit_Username_editingFinished()
+void Usuarioconfig::on_lineEdit_Username_editingFinished()
 {
     if(ui->lineEdit_Username->text() == ""){
         ui->lineEdit_Username->setText("Nombre de usuario:");
@@ -184,18 +188,18 @@ void Usuario::on_lineEdit_Username_editingFinished()
     }
 }
 
-void Usuario::on_lineEdit_Foto_editingFinished()
-{
-    if(ui->lineEdit_Foto->text() == "")
-        ui->lineEdit_Foto->setText("Foto:");
-}
+//void Usuarioconfig::on_lineEdit_Foto_editingFinished()
+//{
+//    if(ui->lineEdit_Foto->text() == "")
+//        ui->lineEdit_Foto->setText("Foto:");
+//}
 // **************************************************
 // **************************************************
 
 // **************************************************
 //  Chequeo de nombre de usuarios
 // **************************************************
-void Usuario::on_lineEdit_Username_textEdited(const QString &new_user)
+void Usuarioconfig::on_lineEdit_Username_textEdited(const QString &new_user)
 {
     QFile fileUsuario;
 
@@ -214,22 +218,46 @@ void Usuario::on_lineEdit_Username_textEdited(const QString &new_user)
 // **************************************************
 //  Acciones frente a evento del click en Line Edit
 // **************************************************
-void Usuario::nombreClicked()
+void Usuarioconfig::nombreClicked()
 {
     ui->lineEdit_Nombre->clear();
 }
 
-void Usuario::apellidoClicked()
+void Usuarioconfig::apellidoClicked()
 {
     ui->lineEdit_Apellido->clear();
 }
 
-void Usuario::userNameClicked()
+void Usuarioconfig::userNameClicked()
 {
     ui->lineEdit_Username->clear();
 }
 
-void Usuario::fotoClicked()
+//void Usuarioconfig::fotoClicked()
+//{
+//    // Abro la ventana para buscar la imagen
+//    pathFoto = new QString(QFileDialog::getOpenFileName(this, tr("Elegir Imagen"),
+//                                                    QDir::homePath(), tr("Imagenes (*.png *.jpg *.jpeg)")));
+
+//    // Si esta vacio no hago nada
+//    if(!pathFoto->isEmpty()){
+//        // Seteo la imagen en vista previa
+//        QIcon vista_previa(*pathFoto);
+//        ui->PB_VistaPrevia->setIcon(vista_previa);
+//        // Cargo el nombre de la imagen en el line edit
+//        ui->lineEdit_Foto->clear();
+//        ui->lineEdit_Foto->setText(pathFoto->section('/',pathFoto->count('/'),pathFoto->count('/')));
+//    }
+
+//}
+// **************************************************
+// **************************************************
+
+
+
+
+
+void Usuarioconfig::on_PB_SelecFoto_clicked()
 {
     // Abro la ventana para buscar la imagen
     pathFoto = new QString(QFileDialog::getOpenFileName(this, tr("Elegir Imagen"),
@@ -237,18 +265,15 @@ void Usuario::fotoClicked()
 
     // Si esta vacio no hago nada
     if(!pathFoto->isEmpty()){
-        // Seteo la imagen en vista previa
-        QIcon vista_previa(*pathFoto);
-        ui->PB_VistaPrevia->setIcon(vista_previa);
-        // Cargo el nombre de la imagen en el line edit
-        ui->lineEdit_Foto->clear();
-        ui->lineEdit_Foto->setText(pathFoto->section('/',pathFoto->count('/'),pathFoto->count('/')));
+        editPhoto = new Photoedit(this,*pathFoto);
+        editPhoto->exec();
     }
-
 }
-// **************************************************
-// **************************************************
 
-
-
-
+void Usuarioconfig::on_PB_SacarFoto_clicked()
+{
+    camWindow = new Camera(this);
+    camWindow->setRutaImagen(DIRUSUARIOS);
+    camWindow->setNombreImagen("image1.jpg");
+    camWindow->exec();
+}
